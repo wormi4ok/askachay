@@ -16,6 +16,7 @@ import (
 
 const minVideoDuration = 2*time.Minute + 30*time.Second
 const maxVideoDuration = 10 * time.Minute
+const maxSearchResults = 5
 
 type Client struct {
 	base *youtube.Service
@@ -34,13 +35,16 @@ func (c *Client) SearchMusic(input string) (name, url string, err error) {
 	searchCall := c.base.Search.List([]string{"id", "snippet"}).
 		Q(input + " lyrics").
 		Type("video").
-		MaxResults(5)
+		MaxResults(maxSearchResults)
 	response, err := searchCall.Do()
 	if err != nil {
 		return "", "", fmt.Errorf("failed to get search results: %w", err)
 	}
+	if response.HTTPStatusCode != 200 {
+		return name, "", fmt.Errorf("non-2xx respose from YouTube: %d", response.HTTPStatusCode)
+	}
 	if len(response.Items) == 0 {
-		return name, "", fmt.Errorf("nothing found by search request: %s", name)
+		return name, "", fmt.Errorf("nothing found by search request: %s", input)
 	}
 
 	for _, item := range response.Items {

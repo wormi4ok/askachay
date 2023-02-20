@@ -16,7 +16,12 @@ func Test_extractName(t *testing.T) {
 		{
 			"shazam share",
 			"Мое открытие на Shazam: Alice Cooper - Poison. https://www.shazam.com/track/55255280/poison?referrer=share",
-			"Alice Cooper Poison",
+			"Alice Cooper - Poison",
+		},
+		{
+			"shazam share 2",
+			"Мое открытие на Shazam: Johnny Cash - God's Gonna Cut You Down. https://www.shazam.com/track/44335694/gods-gonna-cut-you-down?referrer=share",
+			"Johnny Cash - God's Gonna Cut You Down",
 		},
 	}
 	for _, tt := range tests {

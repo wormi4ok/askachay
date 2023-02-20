@@ -53,6 +53,6 @@ func removeUrls(s string) string {
 }
 
 func removeSpecialChars(s string) string {
-	reg := regexp.MustCompile("[^a-zA-Z ]+")
+	reg := regexp.MustCompile(`[^a-zA-Z \-']+`)
 	return reg.ReplaceAllString(s, "")
 }
