@@ -4,6 +4,11 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"unicode"
+
+	"golang.org/x/text/runes"
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 
 	"github.com/wormi4ok/askachay/internal"
 	"github.com/wormi4ok/askachay/youtube"
@@ -29,22 +34,28 @@ func (s *Shazam) SearchMusic(input string) (name, url string, err error) {
 func extractName(name string) string {
 	name = removeShazamShareText(name)
 	name = removeUrls(name)
-	name = removeSpecialChars(name)
 	name = removeDoubleSpaces(name)
-	return name
-}
-
-func removeDoubleSpaces(name string) string {
-	reg := regexp.MustCompile(`\s+`)
-	name = reg.ReplaceAllString(name, " ")
-	return strings.TrimSpace(name)
-}
-
-func removeShazamShareText(name string) string {
-	if i := strings.Index(strings.ToLower(name), "shazam:"); i > 0 {
-		return name[i+len("shazam:"):]
+	asciiName, err := convertToAscii(name)
+	if err != nil {
+		asciiName = name
 	}
+	name = convertSeparator(asciiName)
+	name = removeSpecialChars(name)
+
 	return name
+}
+
+func removeDoubleSpaces(s string) string {
+	reg := regexp.MustCompile(`\s+`)
+	s = reg.ReplaceAllString(s, " ")
+	return strings.TrimSpace(s)
+}
+
+func removeShazamShareText(s string) string {
+	if i := strings.Index(strings.ToLower(s), "shazam:"); i > 0 {
+		return s[i+len("shazam:"):]
+	}
+	return s
 }
 
 func removeUrls(s string) string {
@@ -55,4 +66,17 @@ func removeUrls(s string) string {
 func removeSpecialChars(s string) string {
 	reg := regexp.MustCompile(`[^a-zA-Z \-']+`)
 	return reg.ReplaceAllString(s, "")
+}
+
+func convertSeparator(s string) string {
+	reg := regexp.MustCompile(`( от | by )`)
+	return reg.ReplaceAllString(s, " - ")
+}
+
+func convertToAscii(s string) (string, error) {
+	result, _, err := transform.String(transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn))), s)
+	if err != nil {
+		return "", err
+	}
+	return result, nil
 }
