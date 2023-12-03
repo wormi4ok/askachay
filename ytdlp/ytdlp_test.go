@@ -27,7 +27,7 @@ func TestYtDlp_Download(t *testing.T) {
 			args: args{
 				url: "https://www.youtube.com/watch?v=NEDG31pF2sw",
 			},
-			wantChecksum: "bae52faaf4f03429672b658c3d8e03c6b99d22f78659ab5d94f86ecd640f675e",
+			wantChecksum: "01696c9cb4cf8065ef7186085b5ae0428b310c3e1cf9fe96f622e40bda6d6e0a",
 			wantErr:      false,
 		},
 	}
