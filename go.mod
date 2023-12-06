@@ -1,17 +1,17 @@
 module github.com/wormi4ok/askachay
 
-go 1.19
+go 1.21
 
 require (
 	github.com/BurntSushi/toml v1.3.2
 	github.com/ChannelMeter/iso8601duration v0.0.0-20150204201828-8da3af7a2a61
 	github.com/alecthomas/kong v0.8.1
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
-	github.com/nicksnyder/go-i18n/v2 v2.2.2
+	github.com/nicksnyder/go-i18n/v2 v2.3.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/studio-b12/gowebdav v0.9.0
 	golang.org/x/text v0.14.0
-	google.golang.org/api v0.152.0
+	google.golang.org/api v0.153.0
 )
 
 require (
