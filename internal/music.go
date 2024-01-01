@@ -6,7 +6,7 @@ import (
 )
 
 type Downloader interface {
-	Download(url string) (io.ReadCloser, error)
+	Download(url string) (io.ReadSeekCloser, error)
 }
 
 type Uploader interface {

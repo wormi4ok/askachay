@@ -120,7 +120,7 @@ func (y *ytDlp) SetTmpDir(path string) error {
 	return err
 }
 
-func (y *ytDlp) Download(url string) (io.ReadCloser, error) {
+func (y *ytDlp) Download(url string) (io.ReadSeekCloser, error) {
 	tmpFile := filepath.Join(y.tmpdir, "output.mp3")
 	_, err := os.Stat(tmpFile)
 	if err == nil {
