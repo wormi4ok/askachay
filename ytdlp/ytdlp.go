@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -23,8 +24,12 @@ import (
 	"github.com/wormi4ok/askachay/internal"
 )
 
+// ytdlp implements both Searcher and Downloader interfaces.
+// It uses yt-dlp cli tool to download files to a temporary directory
+// reading cookies with authentication information from file.
 type ytDlp struct {
-	tmpdir string
+	cookiesFile string
+	tmpdir      string
 }
 
 func (y *ytDlp) SearchMusic(input string) (name, url string, err error) {
@@ -103,8 +108,11 @@ func isUrl(s string) bool {
 	return err == nil
 }
 
-func NewYtDlp() *ytDlp {
-	return &ytDlp{os.TempDir()}
+func NewYtDlp(cookiesPath string) *ytDlp {
+	return &ytDlp{
+		cookiesFile: cookiesPath,
+		tmpdir:      os.TempDir(),
+	}
 }
 
 func (y *ytDlp) SetTmpDir(path string) error {
@@ -137,6 +145,7 @@ func (y *ytDlp) Download(url string) (io.ReadSeekCloser, error) {
 		ctx,
 		"yt-dlp",
 		"--no-cache-dir",
+		"--cookies", y.cookiesFile,
 		"--abort-on-error",
 		"--newline",
 		"--restrict-filenames",
@@ -152,24 +161,25 @@ func (y *ytDlp) Download(url string) (io.ReadSeekCloser, error) {
 	cmd.Stdout = &stdoutBuf
 	cmd.Stderr = &stderrBuf
 
+	log.Printf("execuriting command: %s", cmd.String())
 	err = cmd.Run()
 	errMessage := ""
-	if errors.Is(err, &exec.ExitError{}) {
+	if err != nil && strings.Contains(err.Error(), "exit status 1") {
 		stderrLineScanner := bufio.NewScanner(&stderrBuf)
 
 		for stderrLineScanner.Scan() {
-			r := regexp.MustCompile("error: (.*)")
+			r := regexp.MustCompile("(?i)error: (.*)")
 			line := stderrLineScanner.Text()
 			if i := r.FindStringSubmatchIndex(line); i != nil {
 				errMessage += line[i[0]:]
 			}
 		}
 		if errMessage != "" {
-			return nil, errors.New(errMessage)
+			return nil, fmt.Errorf("extracted error: %s", errMessage)
 		}
 	}
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unprocessed error: %w", err)
 	}
 
 	f, err := os.Open(tmpFile)

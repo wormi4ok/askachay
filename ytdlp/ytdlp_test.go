@@ -33,7 +33,10 @@ func TestYtDlp_Download(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			y := &ytDlp{t.TempDir()}
+			y := &ytDlp{
+				tmpdir:      t.TempDir(),
+				cookiesFile: "~/cookies.txt",
+			}
 			got, err := y.Download(tt.args.url)
 			if (err != nil) != tt.wantErr {
 				t.Fatalf("Download() error = %v, wantErr %v", err, tt.wantErr)

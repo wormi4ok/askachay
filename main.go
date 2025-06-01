@@ -17,9 +17,10 @@ import (
 )
 
 var CLI struct {
-	URL        string `xor:"mode" help:"Source URL"`
-	ConfigPath string `env:"CONFIG_PATH" default:"users.json"`
-	Webdav     struct {
+	URL         string `xor:"mode" help:"Source URL"`
+	ConfigPath  string `env:"CONFIG_PATH" default:"users.json"`
+	CookiesPath string `env:"COOKIES_PATH" default:"cookies.txt"`
+	Webdav      struct {
 		Host       string `required:"" env:"HOST"`
 		User       string `required:"" env:"USER"`
 		Pass       string `required:"" env:"PASS"`
@@ -46,7 +47,7 @@ func main() {
 		log.Error(err)
 	}
 	upl := nas.NewWebDavClient(CLI.Webdav.Host, CLI.Webdav.User, CLI.Webdav.Pass)
-	dl := ytdlp.NewYtDlp()
+	dl := ytdlp.NewYtDlp(CLI.CookiesPath)
 	sh := shazam.NewShazam(yt)
 
 	bundle := configureLanguages(CLI.LoadLanguage)

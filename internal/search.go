@@ -36,5 +36,5 @@ func (m *MultiSearcher) SearchMusic(searchTerm string) (name, url string, err er
 		return "", "", UnrecognizedInputErr
 
 	}
-	return "", "", fmt.Errorf(strings.Join(searchErrs, "\n"))
+	return "", "", fmt.Errorf("Search errors:\n%s", strings.Join(searchErrs, "\n"))
 }

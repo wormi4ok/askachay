@@ -90,6 +90,7 @@ func (bot *Bot) ServeUpdates(app *internal.App, bundle *i18n.Bundle) error {
 		}
 
 		if err != nil {
+			log.Printf("Error: %s", err)
 			if err := bot.respond(msg, fmt.Sprintf(m.Error, err)); err != nil {
 				return err
 			}
