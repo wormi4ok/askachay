@@ -2,6 +2,7 @@ package nas
 
 import (
 	"os"
+	"slices"
 	"testing"
 )
 
@@ -21,10 +22,5 @@ func TestGetShareList(t *testing.T) {
 }
 
 func anyIsEmpty(ss ...string) bool {
-	for _, s := range ss {
-		if s == "" {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(ss, "")
 }
