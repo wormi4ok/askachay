@@ -119,6 +119,14 @@ func Test_normalizedTitle(t *testing.T) {
 			},
 			want: "Green Day - Holiday",
 		},
+		{
+			name: "Remove text in rounds brackets",
+			input: VideoInfo{
+				Title:      "Puddle of Mudd - Blurr (Lyrics)",
+				AuthorName: "Puddle of Mudd",
+			},
+			want: "Puddle Of Mudd - Blurr",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

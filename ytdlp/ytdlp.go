@@ -77,7 +77,7 @@ func getTitle(VideoURL string) string {
 }
 
 func normalizedTitle(videoInfo VideoInfo) string {
-	cleanBracketsRe := regexp.MustCompile(`\(([^()]+)\)`)
+	cleanBracketsRe := regexp.MustCompile(`\([^()]*\)`)
 	reSquareBrackets := regexp.MustCompile(`\[.*?]`)
 	authorName := strings.TrimSpace(videoInfo.AuthorName)
 	title := strings.TrimSpace(videoInfo.Title)
@@ -89,7 +89,7 @@ func normalizedTitle(videoInfo VideoInfo) string {
 
 	// Put author Name before the title, if reversed
 	if strings.Contains(title, authorName) && !strings.HasPrefix(title, authorName) {
-		title = strings.Replace(title, authorName, "", -1)
+		title = strings.ReplaceAll(title, authorName, "")
 		title = strings.Trim(title, "-– ")
 		title = fmt.Sprintf("%s - %s", authorName, title)
 	}
