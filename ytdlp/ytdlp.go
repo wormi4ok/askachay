@@ -128,13 +128,13 @@ func (y *ytDlp) SetTmpDir(path string) error {
 	return err
 }
 
-func (y *ytDlp) Download(url string) (io.ReadSeekCloser, error) {
-	tmpFile := filepath.Join(y.tmpdir, "output.mp3")
+func (y *ytDlp) Download(link string) (io.ReadSeekCloser, error) {
+	tmpFile := filepath.Join(y.tmpdir, link[len(link)-10:]+".mp3")
 	_, err := os.Stat(tmpFile)
 	if err == nil {
 		err = os.Remove(tmpFile)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to clean up old tmp file: %w", err)
 		}
 	}
 
@@ -153,7 +153,7 @@ func (y *ytDlp) Download(url string) (io.ReadSeekCloser, error) {
 		"--extract-audio",
 		"--audio-format", "mp3",
 		"-o", tmpFile,
-		url,
+		link,
 	)
 
 	var stdoutBuf, stderrBuf bytes.Buffer
