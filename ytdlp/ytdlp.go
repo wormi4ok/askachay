@@ -148,7 +148,7 @@ func (y *ytDlp) Download(link string) (io.ReadSeekCloser, error) {
 		"--cookies", y.cookiesFile,
 		"--abort-on-error",
 		"--newline",
-		"--restrict-filenames",
+		"--no-windows-filenames",
 		"--format", "140",
 		"--extract-audio",
 		"--audio-format", "mp3",
