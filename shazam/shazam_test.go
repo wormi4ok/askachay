@@ -26,13 +26,17 @@ func Test_extractName(t *testing.T) {
 		{
 			"shazam share 3",
 			"Baby Said от Måneskin https://www.shazam.com/track/645856503/baby-said?referrer=share",
-			"Baby Said - Maneskin",
+			"Maneskin - Baby Said",
+		},
+		{
+			"shazam share 4",
+			"Выхода нет от Сплин. https://www.shazam.com/song/1345372354/выхода-нет",
+			"Сплин - Выхода нет",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := extractName(tt.input); got != tt.want {
-				got, _ = convertToAscii(got)
 				t.Errorf("extractName() = %v, want %v", got, tt.want)
 			}
 		})
